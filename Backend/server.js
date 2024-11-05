@@ -35,27 +35,71 @@ app.post('/register', (req, res) => {
     });
 });
 
+// Login route
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const sql = "SELECT * FROM User WHERE email = ? AND password = ?";
-
-    db.query(sql, [email, password], (err, result) => {
+    const { emailOrUsername, password } = req.body;
+    const sql = "SELECT * FROM User WHERE (email = ? OR username = ?) AND password = ?";
+    
+    db.query(sql, [emailOrUsername, emailOrUsername, password], (err, result) => {
         if (err) {
             console.error("Error querying database: ", err);
             return res.status(500).json({ error: "Database query failed" });
         }
 
-        console.log("Query Result:", result); // Log the query result for debugging
-
         if (result.length > 0) {
-            // User found, login successful
-            res.status(200).json({ message: "Login successful" });
+            const user = result[0];
+            // Login successful, respond with the username
+            res.status(200).json({ message: "Login successful", username: user.username });
         } else {
             // No user found with these credentials
-            res.status(401).json({ error: "Invalid email or password" });
+            res.status(401).json({ error: "Invalid email/username or password" });
         }
     });
 });
+
+// Password reset route
+app.post('/reset-password', (req, res) => {
+    const { emailOrUsername, currentPassword, newPassword } = req.body;
+
+    // Check if the user exists and the current password is correct
+    const checkUserSql = "SELECT * FROM User WHERE (email = ? OR username = ?) AND password = ?";
+    db.query(checkUserSql, [emailOrUsername, emailOrUsername, currentPassword], (err, result) => {
+        if (err) {
+            console.error("Error querying database: ", err);
+            return res.status(500).json({ error: "Database query failed" });
+        }
+
+        if (result.length === 0) {
+            // No user found or incorrect current password
+            return res.status(401).json({ error: "Invalid email/username or current password" });
+        }
+
+        // If user is found and current password is correct, proceed to update the password
+        const updatePasswordSql = "UPDATE User SET password = ? WHERE (email = ? OR username = ?)";
+        db.query(updatePasswordSql, [newPassword, emailOrUsername, emailOrUsername], (err, updateResult) => {
+            if (err) {
+                console.error("Error updating password: ", err);
+                return res.status(500).json({ error: "Failed to update password" });
+            }
+
+            res.status(200).json({ message: "Password reset successful" });
+        });
+    });
+});
+
+// Fetch questions route
+app.get('/Questions', (req, res) => {
+    const sql = "SELECT * FROM Questions"; // Adjust this to match your table structure
+
+    db.query(sql, (err, results) => {
+        if (err) {
+            console.error("Error fetching questions: ", err);
+            return res.status(500).json({ error: "Failed to fetch questions" });
+        }
+        res.status(200).json(results);
+    });
+});
+
 
 app.listen(8081, () => {
     console.log("Server is running on http://localhost:8081");

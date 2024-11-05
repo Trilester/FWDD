@@ -1,39 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100vh; /* Full height */
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center horizontally */
+  align-items: center; /* Center vertically */
+  background-color: #e0e0e0; /* Softer background color */
+  font-family: 'Arial', sans-serif; /* Font style */
+}
+
 .centered-container {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f2f2f2;
-  font-family: Arial, sans-serif;
+  flex-direction: column; /* Stack game container vertically */
+  align-items: center; /* Center game container horizontally */
 }
 
 .game-container {
   display: flex;
-  align-items: center;
+  justify-content: space-between; /* Space players apart */
+  align-items: center; /* Center players and game area vertically */
   padding: 20px;
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff; /* Light background for better contrast */
+  border-radius: 12px; /* Slightly larger border radius */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow */
+  width: 80%; /* Set a width for the container */
+  max-width: 1200px; /* Add a max width for larger screens */
 }
 
 .player-info {
-  width: 150px;
+  width: 250px; /* Fixed width for player info */
   text-align: center;
   margin: 0 20px;
-  background-color: #f0f0f0;
+  background-color: #f9f9f9; /* Slightly lighter background for player info */
   border-radius: 10px;
-  padding: 10px;
-  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 15px; /* Increased padding for better spacing */
+  box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1); /* Softer shadow */
+  transition: transform 0.3s; /* Animation for hover effect */
+}
+
+.player-info:hover {
+  transform: translateY(-2px); /* Slight lift on hover */
 }
 
 .player-info h2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem; /* Increased font size for headings */
   margin-bottom: 10px;
   color: #333;
 }
 
 .player-info div {
-  font-size: 1rem;
+  font-size: 1.1rem; /* Increased font size for better readability */
   margin: 5px 0;
 }
 
@@ -41,60 +59,112 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 20px;
-  text-align: center;
-}
-
-.game-area h1 {
-  font-size: 1.5rem;
-  color: #444;
-  margin-bottom: 20px;
-}
-
-input[type="number"] {
-  padding: 5px;
-  font-size: 1rem;
-  width: 100px;
-  text-align: center;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  margin-top: 10px;
-}
-
-input[type="number"]:focus {
-  outline: none;
-  border: 1px solid #555;
+  text-align: center; /* Center text in the game area */
 }
 
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(6, 50px);
-  gap: 5px;
-  margin-top: 20px;
+  grid-template-columns: repeat(6, 1fr); /* 6 columns */
+  grid-gap: 5px; /* Small gap between cells */
+  margin: 20px 0; /* Spacing above and below the grid */
+  position: relative;
 }
 
 .grid-cell {
-  width: 50px;
-  height: 50px;
+  width: 60px; /* Set fixed width for each cell */
+  height: 60px; /* Set fixed height for each cell */
+  background-color: green; /* Default background color for cells */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 5px;
-  background-color: #ececec;
-  cursor: pointer;
-  transition: background-color 0.3s;
+  justify-content: center; /* Center content horizontally */
+  align-items: center; /* Center content vertically */
+  border-radius: 8px; /* Rounded corners */
+  cursor: pointer; /* Pointer on hover */
+  font-size: 24px; /* Adjusted font size */
+  transition: background-color 0.3s; /* Smooth background color transition */
 }
 
 .grid-cell.flipped {
-  background-color: #ddd;
-  color: #333;
-}
-
-.grid-cell.highlighted {
-  background-color: #ffeb3b;
+  background-color: green; /* Background color for flipped cells */
 }
 
 .grid-cell.bomb {
-  background-color: #f44336;
-  color: #fff;
+  background-color: green; /* Background color for bomb cells */
 }
+
+.grid-cell.yellow {
+  background-color: yellow; /* Background color for yellow cells */
+}
+
+.grid-cell.clicked-bomb {
+  background-color: red; /* Background color for clicked bomb cells */
+}
+
+/* Other existing styles */
+
+.question-container {
+    position: absolute; /* Position it absolutely to overlay */
+    top: 50%; /* Adjust to your liking */
+    left: 50%;
+    transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+    background-color: rgba(234, 242, 12, 0.853); /* Semi-transparent background */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    z-index: 10; /* Ensure it appears above other elements */
+    display: flex; /* Use flexbox */
+    flex-direction: column; /* Stack children vertically */
+    align-items: center; /* Center children horizontally */
+    text-align: center; /* Center text */
+}
+
+.question-container h2 {
+    margin-bottom: 15px; /* Space between question and answer */
+    font-size: 1.5rem; /* Font size for the question */
+}
+
+.question-container .answer {
+    margin-top: 10px; /* Space above the answer */
+    font-size: 1.2rem; /* Font size for the answer */
+}
+
+.answer-options {
+  display: flex; /* Use flexbox for vertical layout */
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: center; /* Center buttons horizontally */
+  margin-top: 15px; /* Space above the answers */
+}
+
+.answer-button {
+  margin: 5px 0; /* Space between buttons */
+  padding: 10px 15px; /* Padding for buttons */
+  background-color: rgba(0, 30, 255, 0.997); /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* No border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s; /* Smooth background transition */
+}
+
+.answer-button:hover {
+  background-color: #adb300; /* Darker blue on hover */
+}
+
+.message-container {
+  position: absolute; /* Position it absolutely to overlay */
+  top: 50%; /* Adjust to your liking */
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
+  background-color: rgba(242, 50, 12, 0.853); /* Semi-transparent background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 10; /* Ensure it appears above other elements */
+  display: flex; /* Use flexbox */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  text-align: center; /* Center text */
+}
+
+/* Additional styles for questions and answers can go here */
+
+
