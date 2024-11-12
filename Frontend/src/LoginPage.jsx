@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './LoginPage.css';
 
 function LoginPage() {
   const [emailOrUsername, setEmailOrUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [resetVisible, setResetVisible] = useState(false); // State for reset password visibility
+  const [resetVisible, setResetVisible] = useState(false); 
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
@@ -26,10 +27,8 @@ function LoginPage() {
         const data = await response.json();
         alert("Login successful!");
 
-        // Store the username in local storage
         localStorage.setItem("username", data.username);
 
-        // Navigate to the homepage after login
         navigate('/');
       } else {
         alert("Login failed. Please check your credentials.");
@@ -59,9 +58,7 @@ function LoginPage() {
 
       if (response.ok) {
         alert("Password reset successful!");
-        setResetVisible(false); // Hide reset form after success
-        // Optionally, you might want to clear the input fields here
-      } else {
+        setResetVisible(false); 
         alert("Password reset failed. Please check your credentials.");
       }
     } catch (error) {
@@ -70,12 +67,16 @@ function LoginPage() {
     }
   };
 
+  const Register = () => {
+    navigate('/register'); 
+  };
+
   return (
-    <div>
-      {!resetVisible ? ( // Conditional rendering based on resetVisible
+    <div className="login-container">
+      {!resetVisible ? ( 
         <>
           <h1>Login</h1>
-          <form onSubmit={handleLogin}>
+          <form onSubmit={handleLogin} className="login-form">
             <div>
               <label>Email or Username:</label>
               <input 
@@ -94,14 +95,17 @@ function LoginPage() {
                 required 
               />
             </div>
-            <button type="submit">Login</button>
+            <div className="button-container">
+              <button type="submit">Login</button>
+              <button type="button" onClick={() => setResetVisible(true)}>Reset Password</button>
+              <button type="button" onClick={Register}>Register</button>
+            </div>
           </form>
-          <button onClick={() => setResetVisible(true)}>Reset Password</button>
         </>
       ) : (
         <div>
           <h2>Reset Password</h2>
-          <form onSubmit={handleResetPassword}>
+          <form onSubmit={handleResetPassword} className="reset-password-form">
             <div>
               <label>Email or Username:</label>
               <input 
@@ -138,8 +142,10 @@ function LoginPage() {
                 required 
               />
             </div>
-            <button type="submit">Reset Password</button>
-            <button type="button" onClick={() => setResetVisible(false)}>Cancel</button>
+            <div className="button-container">
+              <button type="submit">Reset Password</button>
+              <button type="button" onClick={() => setResetVisible(false)}>Cancel</button>
+            </div>
           </form>
         </div>
       )}

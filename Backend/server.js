@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const cors = require('cors');
 const app = express();
 app.use(cors());
-app.use(express.json()); // Add this to parse JSON bodies
+app.use(express.json()); 
 
 const db = mysql.createConnection({
     host: "localhost",
@@ -12,7 +12,6 @@ const db = mysql.createConnection({
     database: 'minefinder'
 });
 
-// Test connection
 db.connect((err) => {
     if (err) {
         console.error("Database connection failed: " + err.stack);
@@ -21,10 +20,10 @@ db.connect((err) => {
     console.log("Connected to database.");
 });
 
-// Registration route
+// Register
 app.post('/register', (req, res) => {
     const { email, username, password } = req.body;
-    const sql = "INSERT INTO User (email, username, password, total_points) VALUES (?, ?, ?, 0)"; // default total_points to 0
+    const sql = "INSERT INTO User (email, username, password) VALUES (?, ?, ?)"; 
 
     db.query(sql, [email, username, password], (err, result) => {
         if (err) {
@@ -35,7 +34,7 @@ app.post('/register', (req, res) => {
     });
 });
 
-// Login route
+// Login 
 app.post('/login', (req, res) => {
     const { emailOrUsername, password } = req.body;
     const sql = "SELECT * FROM User WHERE (email = ? OR username = ?) AND password = ?";
@@ -48,20 +47,17 @@ app.post('/login', (req, res) => {
 
         if (result.length > 0) {
             const user = result[0];
-            // Login successful, respond with the username
             res.status(200).json({ message: "Login successful", username: user.username });
         } else {
-            // No user found with these credentials
             res.status(401).json({ error: "Invalid email/username or password" });
         }
     });
 });
 
-// Password reset route
+// Reset Password
 app.post('/reset-password', (req, res) => {
     const { emailOrUsername, currentPassword, newPassword } = req.body;
 
-    // Check if the user exists and the current password is correct
     const checkUserSql = "SELECT * FROM User WHERE (email = ? OR username = ?) AND password = ?";
     db.query(checkUserSql, [emailOrUsername, emailOrUsername, currentPassword], (err, result) => {
         if (err) {
@@ -70,11 +66,9 @@ app.post('/reset-password', (req, res) => {
         }
 
         if (result.length === 0) {
-            // No user found or incorrect current password
             return res.status(401).json({ error: "Invalid email/username or current password" });
         }
 
-        // If user is found and current password is correct, proceed to update the password
         const updatePasswordSql = "UPDATE User SET password = ? WHERE (email = ? OR username = ?)";
         db.query(updatePasswordSql, [newPassword, emailOrUsername, emailOrUsername], (err, updateResult) => {
             if (err) {
@@ -87,9 +81,9 @@ app.post('/reset-password', (req, res) => {
     });
 });
 
-// Fetch questions route
+// Questions
 app.get('/Questions', (req, res) => {
-    const sql = "SELECT * FROM Questions"; // Adjust this to match your table structure
+    const sql = "SELECT * FROM Questions"; 
 
     db.query(sql, (err, results) => {
         if (err) {
@@ -104,3 +98,4 @@ app.get('/Questions', (req, res) => {
 app.listen(8081, () => {
     console.log("Server is running on http://localhost:8081");
 });
+
